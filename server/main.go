@@ -9,6 +9,7 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
@@ -43,6 +44,7 @@ func main() {
 		}
 	}()
 	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	// SETUP GRPC SERVER
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 8080))
@@ -63,15 +65,14 @@ func newExporter(w io.Writer) (trace.SpanExporter, error) {
 	var opts []jaeger.AgentEndpointOption
 	return jaeger.New(jaeger.WithAgentEndpoint(opts...))
 
-	// todo used to trace in local file
+	//// todo used to trace in local file
 	//return stdouttrace.New(
 	//	stdouttrace.WithWriter(w),
 	//	// Use human-readable output.
 	//	stdouttrace.WithPrettyPrint(),
 	//	// Do not print timestamps for the demo.
 	//	stdouttrace.WithoutTimestamps(),
-	//	,
-	//)
+	//), nil
 }
 
 func newResource() *resource.Resource {

@@ -66,6 +66,8 @@ func main() {
 }
 
 func logic(ctx context.Context, client proto.PlayerServiceClient) {
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.logic")
+	defer span.End()
 	p, err := client.Introduce(ctx, &proto.NoInput{})
 
 	if err != nil {
