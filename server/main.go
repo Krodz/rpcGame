@@ -8,7 +8,7 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
+	"go.opentelemetry.io/otel/exporters/jaeger"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
@@ -60,13 +60,18 @@ func main() {
 }
 
 func newExporter(w io.Writer) (trace.SpanExporter, error) {
-	return stdouttrace.New(
-		stdouttrace.WithWriter(w),
-		// Use human-readable output.
-		stdouttrace.WithPrettyPrint(),
-		// Do not print timestamps for the demo.
-		stdouttrace.WithoutTimestamps(),
-	)
+	var opts []jaeger.AgentEndpointOption
+	return jaeger.New(jaeger.WithAgentEndpoint(opts...))
+
+	// todo used to trace in local file
+	//return stdouttrace.New(
+	//	stdouttrace.WithWriter(w),
+	//	// Use human-readable output.
+	//	stdouttrace.WithPrettyPrint(),
+	//	// Do not print timestamps for the demo.
+	//	stdouttrace.WithoutTimestamps(),
+	//	,
+	//)
 }
 
 func newResource() *resource.Resource {

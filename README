@@ -1,0 +1,7 @@
+* Start test Jaeger instance
+make jaeger
+
+* Run server
+cd server/ <br/>
+OTEL_EXPORTER_JAEGER_ENDPOINT=http://localhost:16686/api/traces go run main.go
+
