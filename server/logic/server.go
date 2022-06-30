@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/krodz/gomicrotest/proto"
 	"go.opentelemetry.io/otel"
+	"google.golang.org/grpc/metadata"
 	"log"
 	"time"
 )
@@ -18,7 +19,11 @@ func NewServer() proto.PlayerServiceServer {
 }
 
 func (s *playerServer) Introduce(ctx context.Context, noInput *proto.NoInput) (*proto.Player, error) {
-	_, span := otel.Tracer("PlayerServer").Start(ctx, "PlayerServer.Introduce")
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		log.Println(md)
+	}
+
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "Player.Introduce")
 	defer span.End()
 
 	defer func(t time.Time) {
@@ -28,6 +33,8 @@ func (s *playerServer) Introduce(ctx context.Context, noInput *proto.NoInput) (*
 }
 
 func (s *playerServer) newPlayer(ctx context.Context, name string) *proto.Player {
+	_, span := otel.Tracer("PlayerServer").Start(ctx, "PlayerServer.newPlayer")
+	defer span.End()
 	return &proto.Player{Name: name, Health: 12}
 }
 
