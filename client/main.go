@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/krodz/gomicrotest/proto"
+	"github.com/krodz/rpcgame/proto"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"

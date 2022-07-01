@@ -1,8 +1,8 @@
-module playground/gomicrotest/client
+module github.com/krodz/rpcGame/client
 
 go 1.18
 
-replace github.com/krodz/gomicrotest/proto => ../proto
+//replace github.com/krodz/rpcgame/proto => ../proto
 
 require (
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
@@ -17,7 +17,6 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/krodz/gomicrotest/proto v0.0.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.32.0
 	go.opentelemetry.io/otel v1.7.0
 	go.opentelemetry.io/otel/trace v1.7.0 // indirect
