@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	proto "github.com/krodz/rpcgame/protobuf"
 	"github.com/krodz/rpcgame/server/logic"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
@@ -21,18 +20,20 @@ import (
 )
 
 func main() {
-	l := log.New(os.Stdout, "", 0)
 	// setup OTEL
 	f, err := os.Create("traces.txt")
 	if err != nil {
-		l.Fatal(err)
+		log.Fatal(err)
 	}
 	defer f.Close()
 
 	exp, err := newExporter(f)
 	if err != nil {
-		l.Fatal(err)
+		log.Fatal(err)
 	}
+
+	env := os.Getenv("OTEL_EXPORTER_JAEGER_ENDPOINT")
+	log.Printf("ENV KEY: %s", env)
 
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exp),
@@ -40,24 +41,24 @@ func main() {
 	)
 	defer func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
-			l.Fatal(err)
+			log.Fatal(err)
 		}
 	}()
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	// SETUP GRPC SERVER
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", 8080))
+	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		panic(err)
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()), // grpc otel
+		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),   // grpc otel
 		grpc.StreamInterceptor(otelgrpc.StreamServerInterceptor())) // grpc otel
 
 	proto.RegisterPlayerServiceServer(grpcServer, logic.NewServer())
-	log.Println("listening to post 8080")
+	log.Println("listening to port 8080")
 	grpcServer.Serve(lis)
 }
 
