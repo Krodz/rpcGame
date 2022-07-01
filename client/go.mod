@@ -2,9 +2,10 @@ module github.com/krodz/rpcgame/client
 
 go 1.18
 
-//replace github.com/krodz/rpcgame/proto => ../proto
+replace github.com/krodz/rpcgame/protobuf => ../proto
 
 require (
+	github.com/krodz/rpcgame/protobuf v0.0.0-00010101000000-000000000000
 	go.opentelemetry.io/otel/exporters/jaeger v1.7.0
 	go.opentelemetry.io/otel/sdk v1.7.0
 	google.golang.org/grpc v1.47.0

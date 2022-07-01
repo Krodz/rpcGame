@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	proto "github.com/krodz/rpcgame/protobuf"
 	"github.com/krodz/rpcgame/server/logic"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
