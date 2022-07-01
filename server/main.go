@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/krodz/rpcGame/proto"
 	"github.com/krodz/rpcGame/server/logic"
+	"github.com/krodz/rpcgame/proto"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -53,7 +53,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),   // grpc otel
+		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()), // grpc otel
 		grpc.StreamInterceptor(otelgrpc.StreamServerInterceptor())) // grpc otel
 
 	proto.RegisterPlayerServiceServer(grpcServer, logic.NewServer())

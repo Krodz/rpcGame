@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/krodz/rpcGame/proto"
+	"github.com/krodz/rpcgame/proto"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/metadata"
 	"log"

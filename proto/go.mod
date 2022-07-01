@@ -1,4 +1,4 @@
-module github.com/krodz/rpcGame/proto
+module github.com/krodz/rpcgame/proto
 
 go 1.18
 
