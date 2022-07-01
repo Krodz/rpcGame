@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/krodz/gomicrotest/proto"
-	"github.com/krodz/gomicrotest/server/logic"
+	"github.com/krodz/rpcGame/proto"
+	"github.com/krodz/rpcGame/server/logic"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -64,15 +64,6 @@ func main() {
 func newExporter(w io.Writer) (trace.SpanExporter, error) {
 	var opts []jaeger.AgentEndpointOption
 	return jaeger.New(jaeger.WithAgentEndpoint(opts...))
-
-	//// todo used to trace in local file
-	//return stdouttrace.New(
-	//	stdouttrace.WithWriter(w),
-	//	// Use human-readable output.
-	//	stdouttrace.WithPrettyPrint(),
-	//	// Do not print timestamps for the demo.
-	//	stdouttrace.WithoutTimestamps(),
-	//), nil
 }
 
 func newResource() *resource.Resource {

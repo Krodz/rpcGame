@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/krodz/gomicrotest/proto"
+	"github.com/krodz/rpcGame/proto"
 	"go.opentelemetry.io/otel"
 	"google.golang.org/grpc/metadata"
 	"log"
@@ -64,5 +64,6 @@ func (s *playerServer) GetInventory(p *proto.Player, stream proto.PlayerService_
 			return err
 		}
 	}
+	// todo
 	return nil
 }

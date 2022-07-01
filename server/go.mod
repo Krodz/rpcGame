@@ -1,8 +1,8 @@
-module github.com/krodz/gomicrotest/server
+module github.com/krodz/rpcGame/server
 
 go 1.18
 
-replace github.com/krodz/gomicrotest/proto => ../proto
+//replace github.com/krodz/gomicrotest/proto => ../proto
 
 require (
 	cloud.google.com/go v0.34.0
@@ -21,7 +21,6 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/krodz/gomicrotest/proto v0.0.1
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.3 // indirect

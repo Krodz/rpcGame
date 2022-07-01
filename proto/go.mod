@@ -1,4 +1,4 @@
-module github.com/krodz/gomicrotest/proto
+module github.com/krodz/rpcGame/proto
 
 go 1.18
 

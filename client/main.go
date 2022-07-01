@@ -39,7 +39,6 @@ func main() {
 		trace.WithResource(newResource()),
 	)
 
-	//tp := trace.NewTracerProvider()
 	defer func() {
 		if err := tp.Shutdown(context.Background()); err != nil {
 			l.Fatal(err)
