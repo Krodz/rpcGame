@@ -3,8 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/krodz/rpcGame/server/logic"
-	"github.com/krodz/rpcgame/proto"
+	"github.com/krodz/rpcgame/server/logic"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"

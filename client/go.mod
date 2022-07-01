@@ -1,4 +1,4 @@
-module github.com/krodz/rpcGame/client
+module github.com/krodz/rpcgame/client
 
 go 1.18
 
