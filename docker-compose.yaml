@@ -1,4 +1,4 @@
-version: "1"
+version: "3.3"
 services:
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -12,7 +12,6 @@ services:
       - "16686:16686"
       - "14268:14268"
       - "14250:14250"
-  # rpc Server
   server:
     build: .
     ports:
@@ -20,3 +19,20 @@ services:
     environment:
       - OTEL_EXPORTER_JAEGER_ENDPOINT=jaeger:16686/api/traces
       - OTEL_EXPORTER_JAEGER_AGENT_HOST=jaeger
+      - RPCGAME_MONGODB_URL=mongodb://root:qwerty12@mongo:27017/
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: qwerty12
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      RPCGAME_MONGODB_ADMINUSERNAME: root
+      RPCGAME_MONGODB_ADMINPASSWORD: qwerty12
+      RPCGAME_MONGODB_URL: mongodb://root:qwerty12@mongo:27017/

@@ -60,24 +60,37 @@ func main() {
 	// create player service client
 	client := proto.NewPlayerServiceClient(conn)
 
-	// call logic
-	logic(ctx, client)
-}
-
-func logic(ctx context.Context, client proto.PlayerServiceClient) {
-	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.logic")
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.Main")
 	defer span.End()
-	p, err := client.Introduce(ctx, &proto.NoInput{})
+	// call logic
+	p := introduce(ctx, client)
 
+	p, err = createPlayer(ctx, client, "krodz", "necromancier")
 	if err != nil {
 		panic(err)
 	}
-	log.Printf("Introduce player %s with %d health", p.Name, p.Health)
 
+	getInventory(ctx, client, p)
+}
+
+func createPlayer(ctx context.Context, client proto.PlayerServiceClient, name, pType string) (p *proto.Player, err error) {
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.CreatePlayer")
+	defer span.End()
+
+	return client.CreateNewPlayer(ctx, &proto.CreatePlayerRequest{
+		Name: name,
+		Type: pType,
+	})
+}
+
+func getInventory(ctx context.Context, client proto.PlayerServiceClient, p *proto.Player) {
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.TestParentSpan")
+	defer span.End()
 	log.Println("Getting inventory...")
 	defer func(t time.Time) {
 		log.Printf("Execution Time GetInventory %v", time.Since(t))
 	}(time.Now())
+
 	stream, err := client.GetInventory(ctx, p)
 	if err != nil {
 		panic(err)
@@ -92,6 +105,18 @@ func logic(ctx context.Context, client proto.PlayerServiceClient) {
 		}
 		log.Printf("Item %s Description %s Quantity %d \n", item.Name, item.Description, item.Quantity)
 	}
+}
+
+func introduce(ctx context.Context, client proto.PlayerServiceClient) *proto.Player {
+	ctx, span := otel.Tracer("PlayerServer").Start(ctx, "client.Introduce")
+	defer span.End()
+	p, err := client.Introduce(ctx, &proto.NoInput{})
+
+	if err != nil {
+		panic(err)
+	}
+	log.Printf("Introduce player %s with %d health", p.Name, p.Health)
+	return p
 }
 
 func newExporter() (trace.SpanExporter, error) {

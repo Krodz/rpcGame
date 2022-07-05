@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlayerServiceClient interface {
 	Introduce(ctx context.Context, in *NoInput, opts ...grpc.CallOption) (*Player, error)
+	CreateNewPlayer(ctx context.Context, in *CreatePlayerRequest, opts ...grpc.CallOption) (*Player, error)
 	GetInventory(ctx context.Context, in *Player, opts ...grpc.CallOption) (PlayerService_GetInventoryClient, error)
 }
 
@@ -33,6 +34,15 @@ func NewPlayerServiceClient(cc grpc.ClientConnInterface) PlayerServiceClient {
 func (c *playerServiceClient) Introduce(ctx context.Context, in *NoInput, opts ...grpc.CallOption) (*Player, error) {
 	out := new(Player)
 	err := c.cc.Invoke(ctx, "/player.PlayerService/Introduce", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *playerServiceClient) CreateNewPlayer(ctx context.Context, in *CreatePlayerRequest, opts ...grpc.CallOption) (*Player, error) {
+	out := new(Player)
+	err := c.cc.Invoke(ctx, "/player.PlayerService/CreateNewPlayer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -76,6 +86,7 @@ func (x *playerServiceGetInventoryClient) Recv() (*Item, error) {
 // for forward compatibility
 type PlayerServiceServer interface {
 	Introduce(context.Context, *NoInput) (*Player, error)
+	CreateNewPlayer(context.Context, *CreatePlayerRequest) (*Player, error)
 	GetInventory(*Player, PlayerService_GetInventoryServer) error
 	mustEmbedUnimplementedPlayerServiceServer()
 }
@@ -86,6 +97,9 @@ type UnimplementedPlayerServiceServer struct {
 
 func (UnimplementedPlayerServiceServer) Introduce(context.Context, *NoInput) (*Player, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Introduce not implemented")
+}
+func (UnimplementedPlayerServiceServer) CreateNewPlayer(context.Context, *CreatePlayerRequest) (*Player, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewPlayer not implemented")
 }
 func (UnimplementedPlayerServiceServer) GetInventory(*Player, PlayerService_GetInventoryServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetInventory not implemented")
@@ -121,6 +135,24 @@ func _PlayerService_Introduce_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlayerService_CreateNewPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreatePlayerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayerServiceServer).CreateNewPlayer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/player.PlayerService/CreateNewPlayer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayerServiceServer).CreateNewPlayer(ctx, req.(*CreatePlayerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _PlayerService_GetInventory_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Player)
 	if err := stream.RecvMsg(m); err != nil {
@@ -152,6 +184,10 @@ var PlayerService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Introduce",
 			Handler:    _PlayerService_Introduce_Handler,
+		},
+		{
+			MethodName: "CreateNewPlayer",
+			Handler:    _PlayerService_CreateNewPlayer_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

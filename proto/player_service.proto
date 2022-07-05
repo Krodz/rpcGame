@@ -5,10 +5,16 @@ option go_package = ".;proto";
 
 service PlayerService {
   rpc Introduce(NoInput) returns (Player) {}
+  rpc CreateNewPlayer(CreatePlayerRequest) returns (Player) {}
   rpc GetInventory(Player) returns (stream Item) {}
 }
 
 message NoInput {}
+
+message CreatePlayerRequest {
+  string name = 1;
+  string type = 2;
+}
 
 message Player {
   string name = 1;
